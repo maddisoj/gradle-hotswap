@@ -52,11 +52,18 @@ class Spawn extends DefaultTask {
     }
 
     FileCollection getClasspath() {
-        return project.hotswap.spawn.classpath
+        return project.hotswap.classpath
+    }
+
+    int getPort() {
+        return project.hotswap.port
     }
 
     Iterable<String> getJvmArgs() {
-        return [ "-Xdebug",
-                 "-Xrunjdwp:transport=dt_socket,address=9000,server=y,suspend=n" ]
+        return [
+            "-Xdebug",
+            "-Xrunjdwp:transport=dt_socket,address=" + this.port 
+            + ",server=y,suspend=n"
+        ]
     }
 }
