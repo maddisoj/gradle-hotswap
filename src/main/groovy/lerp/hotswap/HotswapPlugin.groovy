@@ -9,10 +9,12 @@ import org.gradle.api.tasks.SourceSet
 import org.gradle.api.tasks.StopExecutionException
 
 import lerp.hotswap.tasks.Spawn
+import lerp.hotswap.tasks.Deploy
 import lerp.hotswap.extensions.HotswapExtension
 
 class HotswapPlugin implements Plugin<Project> {
     static final String HOTSWAP_SPAWN_TASK_NAME = "JavaSpawn"
+    static final String HOTSWAP_DEPLOY_TASK_NAME = "JavaDeploy"
 
     @Override
     void apply(Project project) {
@@ -22,5 +24,6 @@ class HotswapPlugin implements Plugin<Project> {
 
         project.extensions.create("hotswap", HotswapExtension, project)
         project.tasks.create(HOTSWAP_SPAWN_TASK_NAME, Spawn)
+        project.tasks.create(HOTSWAP_DEPLOY_TASK_NAME, Deploy)
     }
 }

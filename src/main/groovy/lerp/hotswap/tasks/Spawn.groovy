@@ -31,13 +31,14 @@ class Spawn extends DefaultTask {
     }
 
     protected AbstractExecHandleBuilder getExecHandleBuilder() {
-        AbstractExecHandleBuilder execHandleBuilder =
-            new JavaExecHandleBuilder(this.fileResolver)
+        def execHandleBuilder = new JavaExecHandleBuilder(this.fileResolver)
 
-        execHandleBuilder.main = this.mainClass
-        execHandleBuilder.classpath = this.classpath
-        execHandleBuilder.jvmArgs = this.jvmArgs
-        execHandleBuilder.daemon  = true
+        execHandleBuilder.with {
+            main = this.mainClass
+            classpath = this.classpath
+            jvmArgs = this.jvmArgs
+            daemon  = true
+        }
 
         return execHandleBuilder
     }
