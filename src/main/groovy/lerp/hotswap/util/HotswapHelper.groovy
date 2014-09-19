@@ -15,7 +15,7 @@ class HotswapHelper {
         def manager = Bootstrap.virtualMachineManager(),
             connectors = manager.attachingConnectors(),
             connector = connectors.find {
-                return it.transport().name() == CONNECTOR_SOCKET_NAME
+                it.transport().name() == CONNECTOR_SOCKET_NAME
             }
 
         if(connector == null) {

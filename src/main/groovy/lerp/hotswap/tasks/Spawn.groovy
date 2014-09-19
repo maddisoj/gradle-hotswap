@@ -2,50 +2,26 @@ package lerp.hotswap.tasks
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
-import org.gradle.api.internal.file.BaseDirFileResolver
-import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.StopExecutionException
-import org.gradle.process.internal.ExecHandle
-import org.gradle.process.internal.ExecHandleState
-import org.gradle.process.internal.AbstractExecHandleBuilder
-import org.gradle.process.internal.JavaExecHandleBuilder
-import org.gradle.util.CollectionUtils
-
-import javax.inject.Inject
 
 class Spawn extends DefaultTask {
-    protected AbstractExecHandleBuilder execHandleBuilder
-
     Spawn () {
-        description = "Spawns a persitent JVM on the set port ready for " +
+        description = "Spawns a JVM on the user defined port ready for " +
                       "hot code replacement."
     }
 
     @TaskAction
     void spawn() {
-        AbstractExecHandleBuilder execHandleBuilder = getExecHandleBuilder()
-        ExecHandle execHandle = execHandleBuilder?.build()
+        def cmd = [ command, jvmArgs, mainClass ].flatten()*.toString(),
+            builder = new ProcessBuilder(cmd)
 
-        execHandle?.start()?.waitForFinish()
-    }
+        cmd.each { println it.class }
 
-    protected AbstractExecHandleBuilder getExecHandleBuilder() {
-        def execHandleBuilder = new JavaExecHandleBuilder(this.fileResolver)
-
-        execHandleBuilder.with {
-            main = this.mainClass
-            classpath = this.classpath
-            jvmArgs = this.jvmArgs
-            daemon  = true
+        builder.with {
+            //inheritIO()
+            directory(project.projectDir)
+            start()
         }
-
-        return execHandleBuilder
-    }
-
-    @Inject
-    FileResolver getFileResolver() {
-        throw new UnsupportedOperationException()
     }
 
     String getMainClass() {
@@ -60,11 +36,16 @@ class Spawn extends DefaultTask {
         return project.hotswap.port
     }
 
-    Iterable<String> getJvmArgs() {
+    String getCommand() {
+        return "java";
+    }
+
+    List getJvmArgs() {
         return [
             "-Xdebug",
-            "-Xrunjdwp:transport=dt_socket,address=" + this.port 
-            + ",server=y,suspend=n"
+            "-Xrunjdwp:transport=dt_socket,address=$port,server=y,suspend=n",
+            "-cp",
+            classpath.files.join(File.pathSeparator)
         ]
     }
 }
