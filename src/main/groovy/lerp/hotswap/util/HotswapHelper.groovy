@@ -35,26 +35,12 @@ class HotswapHelper {
         }
     }
 
-    static List getClassFiles(Project project) {
-        def classpath = project.hotswap.classpath,
-            files = [],
-            process;
-
-        process = { file ->
-            if(file.isFile()) {
-                files << file
-            } else {
-                file.listFiles().each(process)
-            }
-        }
-
-        classpath.each(process)
-
-        return files
-    }
-
     static void printCapabilities(VirtualMachine vm) {
         println "Redefine Classes: " + vm.canRedefineClasses()
         println "Add Methods: " + vm.canAddMethod()
+    }
+
+    static byte[] loadClassFiles(File classFile) {
+        return classFile.bytes
     }
 }

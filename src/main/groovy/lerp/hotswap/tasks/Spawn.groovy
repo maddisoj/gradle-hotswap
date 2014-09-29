@@ -6,16 +6,14 @@ import org.gradle.api.tasks.TaskAction
 
 class Spawn extends DefaultTask {
     Spawn () {
-        description = "Spawns a JVM on the user defined port ready for " +
-                      "hot code replacement."
+        description = "Spawns a JVM on the user defined port ready for hot " +
+                      "code replacement."
     }
 
     @TaskAction
     void spawn() {
         def cmd = [ command, jvmArgs, mainClass ].flatten()*.toString(),
             builder = new ProcessBuilder(cmd)
-
-        cmd.each { println it.class }
 
         builder.with {
             //inheritIO()
